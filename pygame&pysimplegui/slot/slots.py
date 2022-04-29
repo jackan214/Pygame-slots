@@ -11,15 +11,16 @@ winLineWidth = 15
 boardRows = 4
 boardCols = 4
 squareSize = 200
-circleRadius = 50
-circleWidth = 15
-crossWidth = 25
 space = 55
 windowName = "Slots"
 windowNameInt = 0
+cost = 50
+costtxt = "Cost: {}".format(cost)
+fontClr = (255,99,71)
 
 bgColor = (200, 200, 0)
 lineColor = (0, 0, 180)
+triangleColor = (255, 0, 0)
 winLineColor = (220, 220, 220)
 circleColor = (239, 231, 200)
 crossColor = (66, 66, 66)
@@ -29,19 +30,34 @@ pg.display.set_caption(windowName)
 screen.fill(bgColor)
 board = np.zeros((boardRows, boardCols))
 
-def drawLines():
+def drawLines() :
 	
+	#Line 1 vert
 	pg.draw.line(screen, lineColor, (0, squareSize), (width, squareSize), lineWidth)
-	
+	#Line 2 vert	
 	pg.draw.line(screen, lineColor, (0, 2 * squareSize), (width, 2 * squareSize), lineWidth)
-
+	#Line 3 vert
 	pg.draw.line(screen, lineColor, (0, 3 * squareSize), (width, 3 * squareSize), lineWidth)
 
+	#Line 1 hori
 	pg.draw.line(screen, lineColor, (squareSize, 0), (squareSize, height), lineWidth)
-
+	#Line 2 hori
 	pg.draw.line(screen, lineColor, (2 * squareSize, 0), (2 * squareSize, height), lineWidth)
+	#Line 3 hori
+	pg.draw.line(screen, lineColor, (3 * squareSize, 0), (3 * squareSize, height - 60), lineWidth)
 
-	pg.draw.line(screen, lineColor, (3 * squareSize, 0), (3 * squareSize, height), lineWidth)
+def drawPointSyst() :
+
+	#(leftest point)(top point)(bottom point)
+	pg.draw.polygon(screen, (triangleColor), ((790,760), (760,730), (760,790)))
+	#(leftest point)(top point)(bottom point)
+	pg.draw.polygon(screen, (triangleColor), ((720,760), (750,730), (750,790)))
+
+	myFont = pg.font.SysFont(None, 50)
+	textSurface = myFont.render(costtxt, True, (fontClr))
+	#(x,y)
+	screen.blit(textSurface, (560, 750))
+
 
 snake1 = pg.image.load("snake.png")
 snake2 = pg.image.load("blackSnake.png")
@@ -50,9 +66,9 @@ def drawShapes():
 	for row in range(boardRows):
 		for col in range(boardCols):
 			if board[row][col] == 1:
-				screen.blit(snake2, (int( col * squareSize + squareSize//2 ), int( row * squareSize + squareSize//2 )))				
+				screen.blit(snake2, (int( col * squareSize + squareSize//2 - 32), int( row * squareSize + squareSize//2 - 32)))				
 			elif board[row][col] == 2:
-				screen.blit(snake1, (int( col * squareSize + squareSize//2 ), int( row * squareSize + squareSize//2 )))
+				screen.blit(snake1, (int( col * squareSize + squareSize//2 - 32), int( row * squareSize + squareSize//2 - 32)))
 
 def markSquare(row, col):
 	shape = rand.randint(1,2)
@@ -71,20 +87,25 @@ def boardCheck():
 
 def checkWin(player):
 	global windowNameInt
+
+	#All vertical
 	for col in range(boardCols):
 		if board[0][col] == player and board[1][col] == player and board[2][col] == player and board[3][col] == player:
 			vertWinLine(col)
 			windowNameInt += 1
 
+	#All horizontal
 	for row in range(boardRows):
 		if board[row][0] == player and board[row][1] == player and board[row][2] == player and board[row][3] == player:
 			horiWinLine(row)
 			windowNameInt += 1
 
+	#From bottom right to top left
 	if board[3][0] == player and board[2][1] == player and board[1][2] == player and board[0][3] == player:
 		drawAscDiagonal()
 		windowNameInt += 1
 
+	#From top left to bottom right
 	if board[0][0] == player and board[1][1] == player and board[2][2] == player and board[3][3] == player:
 		drawDescDiagonal()
 		windowNameInt += 1
@@ -119,6 +140,7 @@ def drawDescDiagonal():
 def restart():
 	screen.fill(bgColor)
 	drawLines()
+	drawPointSyst()
 	windowName = (str(windowNameInt))
 	pg.display.set_caption(windowName)
 	for row in range(boardRows):
@@ -126,6 +148,7 @@ def restart():
 			board[row][col] = 0
 
 drawLines()
+drawPointSyst()
 
 player = 1
 game_over = False
@@ -139,19 +162,18 @@ def game() :
 		if event.type == pg.MOUSEBUTTONDOWN:
 			pos = pg.mouse.get_pos()
 			while not boardCheck() :
-				
 				randMouseX = rand.randint(0, width - 1)
 				randMouseY = rand.randint(0, height - 1)
 
-				clicked_row = int(randMouseY // squareSize)
-				clicked_col = int(randMouseX // squareSize)
-				print("Click ", pos, "Grid coordinates: ", clicked_row, clicked_col)
+				clickedRow = int(randMouseY // squareSize)
+				clickedCol = int(randMouseX // squareSize)
+				print("Click ", pos, "Grid coordinates: ", clickedRow, clickedCol)
 				
-				if freeSquare(clicked_row, clicked_col):
+				if freeSquare(clickedRow, clickedCol):
 
-					markSquare(clicked_row, clicked_col)
+					markSquare(clickedRow, clickedCol)
 					drawShapes()
-					
+						
 			checkWin(1)
 			checkWin(2)
 
