@@ -15,7 +15,7 @@ space = 55
 windowName = "Slots"
 windowNameInt = 0
 cost = 1
-costtxt = "Cost: {}".format(cost)
+costtxt = "Cost: 1"
 fontClr = (255,99,71)
 player = 1
 game_over = False
@@ -75,7 +75,7 @@ def drawShapes() :
 	for row in range(boardRows) :
 		for col in range(boardCols) :
 			if board[row][col] == 1 :
-				screen.blit(snake2, (int( col * squareSize + squareSize//2 - 32), int( row * squareSize + squareSize//2 - 32)))				
+				screen.blit(snake2, (int( col * squareSize + squareSize//2 - 32), int( row * squareSize + squareSize//2 - 32)))
 			elif board[row][col] == 2 :
 				screen.blit(snake1, (int( col * squareSize + squareSize//2 - 32), int( row * squareSize + squareSize//2 - 32)))
 
@@ -146,14 +146,10 @@ def drawDescDiagonal() :
 	pg.draw.line(screen, color, (15, 15), (width - 15, height - 15), winLineWidth)
 	print("diag win")
 
-def restart(cost) :
+def restart() :
 	screen.fill(bgColor)
 	drawLines()
 	drawPointSyst()
-	costtxt = "Cost: {}".format(cost)
-	myFont = pg.font.SysFont(None, 50)
-	textSurface = myFont.render(costtxt, True, (fontClr))
-	screen.blit(textSurface, (560, 750))
 	windowName = (str(windowNameInt))
 	pg.display.set_caption(windowName)
 	for row in range(boardRows) :
@@ -164,12 +160,12 @@ drawLines()
 drawPointSyst()
 
 def posCheckLeft(pos) :
-    x, y = pos
-    return 720 < x < 750 and 730 < y < 790
+	x, y = pos
+	return 720 < x < 750 and 730 < y < 790
 
 def posCheckRight(pos) :
-    x, y = pos
-    return 760 < x < 790 and 730 < y < 790
+	x, y = pos
+	return 760 < x < 790 and 730 < y < 790
 
 
 def game(cost) :
@@ -182,10 +178,19 @@ def game(cost) :
 			print(pos)
 			if posCheckLeft(pos) :
 				print("left")
-				cost += 1
+				cost += 1			
+				costtxt = "Cost: {}".format(cost)
+				myFont = pg.font.SysFont(None, 50)
+				textSurface = myFont.render(costtxt, True, (fontClr))
+				screen.blit(textSurface, (560, 750))
+
 			elif posCheckRight(pos) :
 				print("right")
-				cost += 1
+				cost += 1		
+				costtxt = "Cost: {}".format(cost)
+				myFont = pg.font.SysFont(None, 50)
+				textSurface = myFont.render(costtxt, True, (fontClr))
+				screen.blit(textSurface, (560, 750))
 
 			else :
 				while not boardCheck() :
@@ -199,14 +204,13 @@ def game(cost) :
 					if freeSquare(clickedRow, clickedCol) :
 
 						markSquare(clickedRow, clickedCol)
-						drawShapes()			
+						drawShapes()
 				checkWin(1, cost)
 				checkWin(2, cost)
 			
-
 		elif event.type == pg.KEYDOWN:
 			if event.key == pg.K_r:
-				restart(cost)
+				restart()
 				
 	pg.display.update()
 
