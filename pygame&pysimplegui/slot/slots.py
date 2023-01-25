@@ -15,8 +15,9 @@ space = 55
 windowName = "Slots"
 windowNameInt = 0
 cost = 1
-costtxt = "Cost: 1"
-fontClr = (255,99,71)
+#costtxt = "Cost: 1"
+instructions = "Spin with left click, reset with R"
+fontClr = (208,24,24)
 player = 1
 game_over = False
 
@@ -34,13 +35,17 @@ lineColor = (0, 0, 180)
 triangleColor = (255, 0, 0)
 winLineColor = (220, 220, 220)
 
+myFont = pg.font.SysFont(None, 50)
+instrTxt = myFont.render(instructions, True, (fontClr))
+
 screen = pg.display.set_mode((width, height))
 pg.display.set_caption(windowName)
 screen.fill(bgColor)
 board = np.zeros((boardRows, boardCols))
 
 def drawLines() :
-	
+
+
 	#Line 1 vert
 	pg.draw.line(screen, lineColor, (0, squareSize), (width, squareSize), lineWidth)
 	#Line 2 vert
@@ -52,8 +57,12 @@ def drawLines() :
 	#Line 2 hori
 	pg.draw.line(screen, lineColor, (2 * squareSize, 0), (2 * squareSize, height), lineWidth)
 	#Line 3 hori
-	pg.draw.line(screen, lineColor, (3 * squareSize, 0), (3 * squareSize, height - 60), lineWidth)
+	pg.draw.line(screen, lineColor, (3 * squareSize, 0), (3 * squareSize, height), lineWidth)
 
+	#Instructions
+	screen.blit(instrTxt, (5, 5))
+
+""" 
 def drawPointSyst() :
 
 	#(rightest point)(top point)(bottom point)
@@ -67,6 +76,7 @@ def drawPointSyst() :
 	#(x,y)
 	screen.blit(textSurface, (560, 750))
 
+ """
 
 snake1 = pg.image.load("snake.png")
 snake2 = pg.image.load("blackSnake.png")
@@ -149,7 +159,7 @@ def drawDescDiagonal() :
 def restart() :
 	screen.fill(bgColor)
 	drawLines()
-	drawPointSyst()
+	# drawPointSyst()
 	windowName = (str(windowNameInt))
 	pg.display.set_caption(windowName)
 	for row in range(boardRows) :
@@ -157,7 +167,7 @@ def restart() :
 			board[row][col] = 0
 
 drawLines()
-drawPointSyst()
+# drawPointSyst()
 
 def posCheckLeft(pos) :
 	x, y = pos
